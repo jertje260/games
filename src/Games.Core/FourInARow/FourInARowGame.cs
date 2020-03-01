@@ -1,27 +1,33 @@
-﻿using System;
-
-namespace Games.Core
+﻿namespace Games.Core.FourInARow
 {
     public class FourInARowGame
     {
-        private Stone[,] _playedStones;
-        private Player _player1;
-        private Player _player2;
+        private readonly Stone?[,] _playedStones;
+        private readonly Player _player1;
+        private readonly Player _player2;
         private Player _currentPlayer;
+        private int _playedStonesCount;
 
         public FourInARowGame(Player player1, Player player2)
         {
             _player1 = player1;
             _currentPlayer = player1;
             _player2 = player2;
-            _playedStones = new Stone[7, 6];
+            _playedStones = new Stone?[7, 6];
+            _playedStonesCount = 0;
         }
 
         public bool Finished { get; private set; }
+        public Player? Winner { get; private set; }
 
 
         public void PlayStone(Player player, int x)
         {
+            if (Finished)
+            {
+                throw new GameAlreadyFinishedException();
+            }
+
             if (player != _currentPlayer)
             {
                 throw new NotPlayersTurnException();
@@ -39,17 +45,25 @@ namespace Games.Core
             }
 
             _playedStones[x, y] = new Stone(x, y, player);
+            _playedStonesCount++;
 
             Finished = IsFinished(x, y, player);
+            if (Finished)
+            {
+                Winner = _currentPlayer;
+            }
 
-            if (_currentPlayer == _player1)
+            if (IsBoardFull())
             {
-                _currentPlayer = _player2;
+                Finished = true;
             }
-            else
-            {
-                _currentPlayer = _player1;
-            }
+
+            _currentPlayer = _currentPlayer == _player1 ? _player2 : _player1;
+        }
+
+        private bool IsBoardFull()
+        {
+            return _playedStonesCount == 42;
         }
 
         private bool IsFinished(int x, int y, Player player)
@@ -158,44 +172,6 @@ namespace Games.Core
             }
 
             return y;
-        }
-    }
-
-    public class PlayNotAllowedException : Exception
-    {
-    }
-
-    public class NotPlayersTurnException : Exception
-    {
-    }
-
-    public class Player
-    {
-        private string _name;
-        public string Name => _name;
-
-        public Player(string name)
-        {
-            _name = name;
-        }
-    }
-
-    public class Stone
-    {
-        public readonly Player Player;
-        public int X { get; }
-        public int Y { get; }
-
-        public Stone(int x, int y, Player player)
-        {
-            Player = player;
-            X = x;
-            Y = y;
-        }
-
-        public bool SamePlayer(Player player)
-        {
-            return Player == player;
         }
     }
 }

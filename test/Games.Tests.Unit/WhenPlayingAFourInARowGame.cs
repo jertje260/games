@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Games.Core;
+using Games.Core.FourInARow;
 using Xunit;
 
 namespace Games.Tests.Unit
@@ -90,8 +91,6 @@ namespace Games.Tests.Unit
             game.PlayStone(_player1, 2);
             game.PlayStone(_player2, 2);
             game.PlayStone(_player1, 3);
-            game.PlayStone(_player2, 3);
-            game.PlayStone(_player1, 4);
 
             game.Finished.Should().BeTrue();
         }
@@ -108,8 +107,6 @@ namespace Games.Tests.Unit
             game.PlayStone(_player1, 2);
             game.PlayStone(_player2, 2);
             game.PlayStone(_player1, 3);
-            game.PlayStone(_player2, 3);
-            game.PlayStone(_player1, 0);
 
             game.Finished.Should().BeTrue();
         }
@@ -125,8 +122,6 @@ namespace Games.Tests.Unit
             game.PlayStone(_player2, 1);
             game.PlayStone(_player1, 0);
             game.PlayStone(_player2, 2);
-            game.PlayStone(_player1, 0);
-            game.PlayStone(_player2, 3);
             game.PlayStone(_player1, 0);
 
             game.Finished.Should().BeTrue();
@@ -146,9 +141,9 @@ namespace Games.Tests.Unit
             game.PlayStone(_player1, 5);
             game.PlayStone(_player2, 3);
             game.PlayStone(_player1, 3);
-            game.PlayStone(_player2, 4);
+            game.PlayStone(_player2, 6);
             game.PlayStone(_player1, 3);
-            game.PlayStone(_player2, 4);
+            game.PlayStone(_player2, 6);
             game.PlayStone(_player1, 2);
 
             game.Finished.Should().BeTrue();
@@ -170,10 +165,55 @@ namespace Games.Tests.Unit
             game.PlayStone(_player1, 1);
             game.PlayStone(_player2, 4);
             game.PlayStone(_player1, 1);
-            game.PlayStone(_player2, 4);
+            game.PlayStone(_player2, 6);
             game.PlayStone(_player1, 2);
 
             game.Finished.Should().BeTrue();
+        }
+
+        [Fact]
+        public void GivenANewGame_ShouldHaveWinnerSetOnesItsWon()
+        {
+            var game = GivenANewGame();
+
+            game.PlayStone(_player1, 4);
+            game.PlayStone(_player2, 3);
+            game.PlayStone(_player1, 3);
+            game.PlayStone(_player2, 2);
+            game.PlayStone(_player1, 2);
+            game.PlayStone(_player2, 1);
+            game.PlayStone(_player1, 5);
+            game.PlayStone(_player2, 1);
+            game.PlayStone(_player1, 1);
+            game.PlayStone(_player2, 4);
+            game.PlayStone(_player1, 1);
+            game.PlayStone(_player2, 6);
+            game.PlayStone(_player1, 2);
+
+            game.Winner.Should().Be(_player1);
+        }
+
+        [Fact]
+        public void GivenANewGame_ShouldThrowException_WhenTryingMoveOnFishedGame()
+        {
+            var game = GivenANewGame();
+
+            game.PlayStone(_player1, 4);
+            game.PlayStone(_player2, 3);
+            game.PlayStone(_player1, 3);
+            game.PlayStone(_player2, 2);
+            game.PlayStone(_player1, 2);
+            game.PlayStone(_player2, 1);
+            game.PlayStone(_player1, 5);
+            game.PlayStone(_player2, 1);
+            game.PlayStone(_player1, 1);
+            game.PlayStone(_player2, 4);
+            game.PlayStone(_player1, 1);
+            game.PlayStone(_player2, 6);
+            game.PlayStone(_player1, 2);
+            game.Invoking(c=> c.PlayStone(_player2, 4))
+                .Should()
+                .Throw<GameAlreadyFinishedException>();
         }
 
         private FourInARowGame GivenANewGame()
