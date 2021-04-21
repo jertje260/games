@@ -1,9 +1,11 @@
 ﻿<div class="connectfour-tile-container" @onclick="Click">
-    <div class="connectfour-tile" style="@StyleString">
+    <div class="connectfour-tile @ClassString">
     </div>
 </div>
 @code {
-    private string StyleString => Model is not null ? $"background-color:{Model?.Color.ToString().ToLowerInvariant()};" : "background-color: white;";
+    //private string StyleString => Model is not null ? $"background-color:{Model?.Color.ToString().ToLowerInvariant()};" : "background-color: white;";
+    private string ClassString => Model is not null ? $"connectfour-tile-{Model?.Color.ToString().ToLowerInvariant()}" : "connectfour-tile-empty";
+
     [Parameter] public Tile? Model { get; set; }
     [Parameter] public Action? OnClick { get; set; }
 

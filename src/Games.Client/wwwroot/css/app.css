@@ -63,12 +63,24 @@ a, .btn-link {
     border-radius: 50%;
 }
 
-.connectfour-tile:hover {
-    /* To override the color set by component */
-    background-color: orange !important;
+.connectfour-tile-red {
+    background-color: red;
 }
 
-    .connectfour-game {
+.connectfour-tile-yellow {
+    background-color: yellow;
+}
+
+.connectfour-tile-empty {
+    background-color: white;
+}
+
+.connectfour-tile-empty:hover {
+
+    background-color: orange;
+}
+
+.connectfour-game {
         padding-top: 10px;
         padding-left: 10px;
         display: grid;
