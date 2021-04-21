@@ -1,27 +1,27 @@
-﻿namespace Games.Core.FourInARow
+﻿namespace Games.Core.ConnectFour
 {
-    public class FourInARowGame
+    public class Game
     {
-        private readonly Stone?[,] _playedStones;
-        private readonly Player _player1;
-        private readonly Player _player2;
-        private Player _currentPlayer;
+        public readonly Tile?[,] PlayedStones;
+        private readonly ConnectFourPlayer _player1;
+        private readonly ConnectFourPlayer _player2;
+        private ConnectFourPlayer _currentPlayer;
         private int _playedStonesCount;
 
-        public FourInARowGame(Player player1, Player player2)
+        public Game(ConnectFourPlayer player1, ConnectFourPlayer player2)
         {
             _player1 = player1;
             _currentPlayer = player1;
             _player2 = player2;
-            _playedStones = new Stone?[7, 6];
+            PlayedStones = new Tile?[7, 6];
             _playedStonesCount = 0;
         }
 
         public bool Finished { get; private set; }
-        public Player? Winner { get; private set; }
+        public ConnectFourPlayer? Winner { get; private set; }
 
 
-        public void PlayStone(Player player, int x)
+        public void PlayStone(ConnectFourPlayer player, int x)
         {
             if (Finished)
             {
@@ -44,7 +44,7 @@
                 throw new PlayNotAllowedException();
             }
 
-            _playedStones[x, y] = new Stone(x, y, player);
+            PlayedStones[x, y] = new Tile(x, y, player.Color);
             _playedStonesCount++;
 
             Finished = IsFinished(x, y, player);
@@ -66,13 +66,13 @@
             return _playedStonesCount == 42;
         }
 
-        private bool IsFinished(int x, int y, Player player)
+        private bool IsFinished(int x, int y, ConnectFourPlayer player)
         {
             var inARow = 1;
             var lastChecked = (x, y);
 
             // horizontal to the left
-            while (lastChecked.x - 1 >= 0 && _playedStones[lastChecked.x - 1, y]?.Player == player)
+            while (lastChecked.x - 1 >= 0 && PlayedStones[lastChecked.x - 1, y]?.Color == player.Color)
             {
                 inARow++;
                 lastChecked.x--;
@@ -84,7 +84,7 @@
 
             // horizontal to the right
             lastChecked = (x, y);
-            while (lastChecked.x + 1 <= 6 && _playedStones[lastChecked.x + 1, y]?.Player == player)
+            while (lastChecked.x + 1 <= 6 && PlayedStones[lastChecked.x + 1, y]?.Color == player.Color)
             {
                 inARow++;
                 lastChecked.x++;
@@ -97,7 +97,7 @@
             // reset for vertical
             inARow = 1;
             lastChecked = (x, y);
-            while (lastChecked.y - 1 >= 0 && _playedStones[x, lastChecked.y - 1]?.Player == player)
+            while (lastChecked.y - 1 >= 0 && PlayedStones[x, lastChecked.y - 1]?.Color == player.Color)
             {
                 inARow++;
                 lastChecked.y--;
@@ -110,7 +110,7 @@
             // reset for diagonally right up
             inARow = 1;
             lastChecked = (x, y);
-            while (lastChecked.y + 1 <= 5 && lastChecked.x + 1 <= 6 && _playedStones[lastChecked.x + 1, lastChecked.y + 1]?.Player == player)
+            while (lastChecked.y + 1 <= 5 && lastChecked.x + 1 <= 6 && PlayedStones[lastChecked.x + 1, lastChecked.y + 1]?.Color == player.Color)
             {
                 inARow++;
                 lastChecked.y++;
@@ -122,7 +122,7 @@
             }
 
             lastChecked = (x, y);
-            while (lastChecked.y - 1 >= 0 && lastChecked.x - 1 >= 0 && _playedStones[lastChecked.x - 1, lastChecked.y - 1]?.Player == player)
+            while (lastChecked.y - 1 >= 0 && lastChecked.x - 1 >= 0 && PlayedStones[lastChecked.x - 1, lastChecked.y - 1]?.Color == player.Color)
             {
                 inARow++;
                 lastChecked.y--;
@@ -136,7 +136,7 @@
             // reset for diagonally right down
             inARow = 1;
             lastChecked = (x, y);
-            while (lastChecked.y - 1 >= 0 && lastChecked.x + 1 <= 6 && _playedStones[lastChecked.x + 1, lastChecked.y - 1]?.Player == player)
+            while (lastChecked.y - 1 >= 0 && lastChecked.x + 1 <= 6 && PlayedStones[lastChecked.x + 1, lastChecked.y - 1]?.Color == player.Color)
             {
                 inARow++;
                 lastChecked.y--;
@@ -148,7 +148,7 @@
             }
 
             lastChecked = (x, y);
-            while (lastChecked.y + 1 <= 5 && lastChecked.x - 1 >= 0 && _playedStones[lastChecked.x - 1, lastChecked.y + 1]?.Player == player)
+            while (lastChecked.y + 1 <= 5 && lastChecked.x - 1 >= 0 && PlayedStones[lastChecked.x - 1, lastChecked.y + 1]?.Color == player.Color)
             {
                 inARow++;
                 lastChecked.y++;
@@ -166,7 +166,7 @@
         {
             var y = 0;
 
-            while (y <= 5 && _playedStones[x, y] != null)
+            while (y <= 5 && PlayedStones[x, y] != null)
             {
                 y++;
             }

@@ -1,0 +1,25 @@
+﻿<div class="connectfour-border">
+<div class="connectfour-game">
+    @if (_game != null)
+    {
+        @for (int i = _game.PlayedStones.GetLength(1)-1; i >= 0 ; i--)
+        {
+            @for (int j = 0; j < _game.PlayedStones.GetLength(0); j++)
+            {
+                <ConnectFourTile Model="@_game.PlayedStones[j,i]" Text=@Text(j,i)></ConnectFourTile>
+            }
+        }
+    }
+</div>
+</div>
+
+@code {
+    private Game _game = new Game(
+        new ConnectFourPlayer("a", TileColor.Yellow),
+        new ConnectFourPlayer("b", TileColor.Red));
+
+    private string Text(int i, int j)
+    {
+        return $"{i}, {j}";
+    }
+}

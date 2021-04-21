@@ -1,19 +1,19 @@
 ﻿using FluentAssertions;
 using Games.Core;
-using Games.Core.FourInARow;
+using Games.Core.ConnectFour;
 using Xunit;
 
 namespace Games.Tests.Unit
 {
     public class WhenPlayingAFourInARowGame
     {
-        private readonly Player _player1;
-        private readonly Player _player2;
+        private readonly ConnectFourPlayer _player1;
+        private readonly ConnectFourPlayer _player2;
 
         public WhenPlayingAFourInARowGame()
         {
-            _player1 = new Player("p1");
-            _player2 = new Player("p2");
+            _player1 = new ConnectFourPlayer("p1", TileColor.Red);
+            _player2 = new ConnectFourPlayer("p2", TileColor.Yellow);
         }
 
         [Fact]
@@ -211,14 +211,14 @@ namespace Games.Tests.Unit
             game.PlayStone(_player1, 1);
             game.PlayStone(_player2, 6);
             game.PlayStone(_player1, 2);
-            game.Invoking(c=> c.PlayStone(_player2, 4))
+            game.Invoking(c => c.PlayStone(_player2, 4))
                 .Should()
                 .Throw<GameAlreadyFinishedException>();
         }
 
-        private FourInARowGame GivenANewGame()
+        private Game GivenANewGame()
         {
-            return new FourInARowGame(_player1, _player2);
+            return new Game(_player1, _player2);
         }
     }
 }

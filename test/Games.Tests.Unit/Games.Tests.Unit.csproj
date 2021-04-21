@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>8.0</LangVersion>
-    <IsPackable>true</IsPackable>
+    <LangVersion>9.0</LangVersion>
+    <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

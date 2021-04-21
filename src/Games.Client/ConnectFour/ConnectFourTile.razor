@@ -1,0 +1,11 @@
+﻿<div class="connectfour-tile-container">
+    <div class="connectfour-tile" style="@StyleString">
+        @Text
+    </div>
+</div>
+@code {
+    private string StyleString => Model is not null ? $"background-color:{Model?.Color.ToString().ToLowerInvariant()};" : "background-color: white;";
+    [Parameter] public Tile? Model { get; set; }
+    [Parameter] public string? Text { get; set; }
+
+}
