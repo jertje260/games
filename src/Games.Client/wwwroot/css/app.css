@@ -58,29 +58,29 @@ a, .btn-link {
 }
 
 .connectfour-tile {
-    background-color: red;
     width: 100%;
     height: 100%;
     border-radius: 50%;
 }
 
-.connectfour-game {
-    padding-top: 10px;
-    padding-left: 10px;
-    display: grid;
-    grid-template-columns: repeat(7, 100px);
-    grid-template-rows: repeat(6, 100px);
-    gap: 10px;
-    justify-items: stretch;
-    
+.connectfour-tile:hover {
+    /* To override the color set by component */
+    background-color: orange !important;
 }
+
+    .connectfour-game {
+        padding-top: 10px;
+        padding-left: 10px;
+        display: grid;
+        grid-template-columns: repeat(7, 100px);
+        grid-template-rows: repeat(6, 100px);
+        gap: 10px;
+        justify-items: stretch;
+        grid-auto-flow: column;
+    }
 
 .connectfour-border {
     background-color: #0366d6;
     width: 780px;
     height: 670px;
-}
-
-.connectfour-column-wrapper:hover {
-    background-color: black;
 }

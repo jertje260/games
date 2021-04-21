@@ -1,25 +1,83 @@
-﻿<div class="connectfour-border">
-<div class="connectfour-game">
-    @if (_game != null)
-    {
-        @for (int i = _game.PlayedStones.GetLength(1)-1; i >= 0 ; i--)
+﻿@using Games.Core;
+<button class="btn btn-primary" @onclick="StartGame">Start Game</button>
+<div class="connectfour-border">
+    <div class="connectfour-game">
+        @if (_game != null)
         {
             @for (int j = 0; j < _game.PlayedStones.GetLength(0); j++)
             {
-                <ConnectFourTile Model="@_game.PlayedStones[j,i]" Text=@Text(j,i)></ConnectFourTile>
+                var x = j;
+                @for (int i = _game.PlayedStones.GetLength(1) - 1; i >= 0; i--)
+                {
+                    var y = i;
+                    <ConnectFourTile Model="@_game.PlayedStones[j,i]" OnClick="() => Click(x,y)"></ConnectFourTile>
+                }
             }
         }
-    }
+    </div>
 </div>
+<div>
+    Errors:
+    @foreach (var error in _errors)
+    {
+        <div>@error</div>
+    }
 </div>
 
 @code {
-    private Game _game = new Game(
-        new ConnectFourPlayer("a", TileColor.Yellow),
-        new ConnectFourPlayer("b", TileColor.Red));
+    private static readonly ConnectFourPlayer P1 = new ConnectFourPlayer("a", TileColor.Yellow);
+    private static readonly ConnectFourPlayer P2 = new ConnectFourPlayer("b", TileColor.Red);
+    private readonly List<string> _errors = new List<string>();
+
+    private Game? _game;
+
+    protected override void OnInitialized()
+    {
+        _game = new Game(P1, P2);
+    }
 
     private string Text(int i, int j)
     {
         return $"{i}, {j}";
     }
+
+    private void Click(int j, int i)
+    {
+        Console.WriteLine($"{j} clicked");
+
+        try
+        {
+            try
+            {
+                _game?.PlayStone(P1, j);
+            }
+            catch (NotPlayersTurnException)
+            {
+                _game?.PlayStone(P2, j);
+            }
+        }
+        catch (PlayNotAllowedException)
+        {
+            _errors.Add($"Play: {j} is not allowed");
+        }
+        catch (GameNotStartedException)
+        {
+            _errors.Add("Game hasn't started yet");
+        }
+        catch (GameAlreadyFinishedException)
+        {
+            _errors.Add("Game has already finished");
+        }
+        StateHasChanged();
+    }
+
+    private void StartGame()
+    {
+        Console.WriteLine("Start Clicked");
+        if (_game is not null && !_game.Started)
+        {
+            _game.Start();
+        }
+    }
+
 }

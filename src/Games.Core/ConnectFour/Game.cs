@@ -17,12 +17,22 @@
             _playedStonesCount = 0;
         }
 
+        public bool Started { get; private set; } = false;
         public bool Finished { get; private set; }
         public ConnectFourPlayer? Winner { get; private set; }
 
+        public void Start()
+        {
+            Started = true;
+        }
 
         public void PlayStone(ConnectFourPlayer player, int x)
         {
+            if (!Started)
+            {
+                throw new GameNotStartedException();
+            }
+
             if (Finished)
             {
                 throw new GameAlreadyFinishedException();
