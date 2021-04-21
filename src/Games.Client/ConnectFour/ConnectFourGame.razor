@@ -1,5 +1,13 @@
 ﻿@using Games.Core;
-<button class="btn btn-primary" @onclick="StartGame">Start Game</button>
+@if(_game is not null && !_game.Finished){
+    <div>Current player is: @_game.CurrentPlayer.Color</div>
+}
+@if(_game is not null && _game.Finished){
+    <button class="btn btn-primary" @onclick="NewGame">New Game</button>
+    <div>
+        Game has finished, the winner was @_game.Winner.Color
+    </div>
+}
 <div class="connectfour-border">
     <div class="connectfour-game">
         @if (_game != null)
@@ -7,44 +15,41 @@
             @for (int j = 0; j < _game.PlayedStones.GetLength(0); j++)
             {
                 var x = j;
+                <div class="column column@(j+1) @FullColumnClass(j)">
                 @for (int i = _game.PlayedStones.GetLength(1) - 1; i >= 0; i--)
                 {
                     var y = i;
-                    <ConnectFourTile Model="@_game.PlayedStones[j,i]" OnClick="() => Click(x,y)"></ConnectFourTile>
+                    <ConnectFourTile Model="@_game.PlayedStones[j,i]" OnClick="() => Click(x)"></ConnectFourTile>
                 }
+                </div>
             }
         }
     </div>
-</div>
-<div>
-    Errors:
-    @foreach (var error in _errors)
-    {
-        <div>@error</div>
-    }
 </div>
 
 @code {
     private static readonly ConnectFourPlayer P1 = new ConnectFourPlayer("a", TileColor.Yellow);
     private static readonly ConnectFourPlayer P2 = new ConnectFourPlayer("b", TileColor.Red);
-    private readonly List<string> _errors = new List<string>();
+    private List<string> _errors = new List<string>();
 
     private Game? _game;
 
     protected override void OnInitialized()
     {
-        _game = new Game(P1, P2);
+        NewGame();
     }
 
-    private string Text(int i, int j)
-    {
-        return $"{i}, {j}";
+    private string FullColumnClass(int j){
+        for(int i = _game.PlayedStones.GetLength(1) - 1; i >= 0; i--){
+            if(_game.PlayedStones[j,i] is null){
+                return "";
+            }
+        }
+        return "column-full";
     }
 
-    private void Click(int j, int i)
+    private void Click(int j)
     {
-        Console.WriteLine($"{j} clicked");
-
         try
         {
             try
@@ -58,26 +63,17 @@
         }
         catch (PlayNotAllowedException)
         {
-            _errors.Add($"Play: {j} is not allowed");
-        }
-        catch (GameNotStartedException)
-        {
-            _errors.Add("Game hasn't started yet");
         }
         catch (GameAlreadyFinishedException)
         {
-            _errors.Add("Game has already finished");
         }
         StateHasChanged();
     }
 
-    private void StartGame()
-    {
-        Console.WriteLine("Start Clicked");
-        if (_game is not null && !_game.Started)
-        {
-            _game.Start();
-        }
+    private void NewGame(){
+        _game = new Game(P1, P2);
+        _game.Start();
+        _errors = new List<string>();
     }
 
 }

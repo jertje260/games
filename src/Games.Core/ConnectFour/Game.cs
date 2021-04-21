@@ -5,13 +5,13 @@
         public readonly Tile?[,] PlayedStones;
         private readonly ConnectFourPlayer _player1;
         private readonly ConnectFourPlayer _player2;
-        private ConnectFourPlayer _currentPlayer;
+        public  ConnectFourPlayer CurrentPlayer { get; private set; }
         private int _playedStonesCount;
 
         public Game(ConnectFourPlayer player1, ConnectFourPlayer player2)
         {
             _player1 = player1;
-            _currentPlayer = player1;
+            CurrentPlayer = player1;
             _player2 = player2;
             PlayedStones = new Tile?[7, 6];
             _playedStonesCount = 0;
@@ -38,7 +38,7 @@
                 throw new GameAlreadyFinishedException();
             }
 
-            if (player != _currentPlayer)
+            if (player != CurrentPlayer)
             {
                 throw new NotPlayersTurnException();
             }
@@ -60,7 +60,7 @@
             Finished = IsFinished(x, y, player);
             if (Finished)
             {
-                Winner = _currentPlayer;
+                Winner = CurrentPlayer;
             }
 
             if (IsBoardFull())
@@ -68,7 +68,7 @@
                 Finished = true;
             }
 
-            _currentPlayer = _currentPlayer == _player1 ? _player2 : _player1;
+            CurrentPlayer = CurrentPlayer == _player1 ? _player2 : _player1;
         }
 
         private bool IsBoardFull()
